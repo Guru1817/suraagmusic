@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Suraag — Music That Never Loses You</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&family=Playfair+Display:wght@700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --deep:#080611;
+  --indigo:#110e24;
+  --card:#15112e;
+  --violet:#1f1650;
+  --gold:#E8A830;
+  --gold-light:#F5C96A;
+  --saffron:#F07020;
+  --cream:#F5EDD8;
+  --muted:rgba(245,237,216,0.5);
+  --border:rgba(232,168,48,0.15);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--deep);
+  color:var(--cream);
+  font-family:'DM Sans',sans-serif;
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* ── CUSTOM CURSOR ── */
+.cursor{position:fixed;width:10px;height:10px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transition:transform .15s,background .2s;mix-blend-mode:difference;}
+.cursor-ring{position:fixed;width:36px;height:36px;border:1.5px solid var(--gold);border-radius:50%;pointer-events:none;z-index:9998;transition:transform .35s cubic-bezier(.25,.46,.45,.94),opacity .3s;}
+
+/* ── NOISE OVERLAY ── */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:1000;opacity:.4;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 6%;
+  background:linear-gradient(to bottom,rgba(8,6,17,.95),transparent);
+  backdrop-filter:blur(12px);
+  border-bottom:0.5px solid var(--border);
+  transition:padding .3s;
+}
+nav.scrolled{padding:14px 6%;background:rgba(8,6,17,.97);}
+.nav-logo{display:flex;align-items:center;gap:12px;}
+.nav-logo-icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(145deg,#1e1840,#120f2a);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;}
+.nav-logo-text{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--cream);letter-spacing:.5px;}
+.nav-logo-text span{color:var(--gold);}
+.nav-links{display:flex;gap:32px;list-style:none;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:13px;letter-spacing:1px;text-transform:uppercase;transition:color .2s;}
+.nav-links a:hover{color:var(--gold);}
+.nav-cta{
+  padding:9px 22px;border-radius:50px;
+  background:linear-gradient(135deg,var(--gold),var(--saffron));
+  color:#0D0B1A;font-size:13px;font-weight:600;
+  text-decoration:none;letter-spacing:.5px;
+  transition:transform .2s,box-shadow .2s;
+}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(232,168,48,.35);}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;}
+.hamburger span{width:24px;height:1.5px;background:var(--cream);display:block;transition:.3s;}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:120px 6% 80px;
+  position:relative;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%,rgba(45,31,110,.6) 0%,transparent 70%),
+    radial-gradient(ellipse 60% 40% at 80% 80%,rgba(240,112,32,.08) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 50% at 20% 60%,rgba(232,168,48,.06) 0%,transparent 60%);
+}
+.hero-orb{
+  position:absolute;width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(45,31,110,.4) 0%,transparent 70%);
+  top:-200px;left:50%;transform:translateX(-50%);
+  animation:pulse 6s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{transform:translateX(-50%) scale(1);}50%{transform:translateX(-50%) scale(1.08);}}
+.hero-content{position:relative;z-index:2;}
+
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:7px 18px;border-radius:50px;
+  border:1px solid var(--border);
+  background:rgba(232,168,48,.07);
+  font-size:12px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;
+  margin-bottom:32px;
+  animation:fadeUp .8s ease both;
+}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
+
+.hero-logo-mark{
+  width:90px;height:90px;border-radius:24px;
+  background:linear-gradient(145deg,#1e1840,#120f2a);
+  border:1px solid rgba(232,168,48,.3);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 28px;
+  animation:fadeUp .8s .1s ease both;
+  box-shadow:0 0 60px rgba(232,168,48,.12),0 20px 40px rgba(0,0,0,.4);
+}
+
+.hero-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(64px,10vw,120px);
+  font-weight:700;line-height:.9;
+  color:var(--cream);letter-spacing:-2px;
+  margin-bottom:16px;
+  animation:fadeUp .8s .2s ease both;
+}
+.hero-title .gold{color:var(--gold);}
+.hero-title .italic{font-style:italic;color:var(--muted);}
+
+.hero-tagline{
+  font-size:clamp(13px,2vw,16px);letter-spacing:5px;
+  color:var(--gold);text-transform:uppercase;font-weight:300;
+  margin-bottom:24px;
+  animation:fadeUp .8s .3s ease both;
+}
+.hero-desc{
+  max-width:520px;margin:0 auto 48px;
+  font-size:16px;line-height:1.8;color:var(--muted);font-weight:300;
+  animation:fadeUp .8s .4s ease both;
+}
+.hero-desc strong{color:var(--cream);}
+
+.hero-btns{
+  display:flex;gap:16px;justify-content:center;flex-wrap:wrap;
+  animation:fadeUp .8s .5s ease both;
+}
+.btn-primary{
+  padding:15px 36px;border-radius:50px;
+  background:linear-gradient(135deg,var(--gold),var(--saffron));
+  color:#0D0B1A;font-size:14px;font-weight:600;letter-spacing:.5px;
+  text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+  transition:transform .2s,box-shadow .2s;
+  box-shadow:0 8px 32px rgba(232,168,48,.3);
+}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(232,168,48,.4);}
+.btn-secondary{
+  padding:15px 36px;border-radius:50px;
+  border:1px solid var(--border);color:var(--cream);
+  font-size:14px;font-weight:400;text-decoration:none;
+  display:inline-flex;align-items:center;gap:8px;
+  transition:border-color .2s,background .2s,transform .2s;
+}
+.btn-secondary:hover{border-color:var(--gold);background:rgba(232,168,48,.07);transform:translateY(-3px);}
+
+.hero-wave{
+  position:absolute;bottom:0;left:0;right:0;
+  display:flex;align-items:flex-end;justify-content:center;gap:4px;
+  height:80px;padding:0 10%;opacity:.3;
+}
+.wave-bar{
+  flex:1;max-width:6px;border-radius:3px;
+  background:linear-gradient(to top,var(--gold),var(--saffron));
+  animation:wave 1.4s ease-in-out infinite;
+}
+@keyframes wave{0%,100%{transform:scaleY(.3);}50%{transform:scaleY(1);}}
+
+/* ── SCROLL ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.reveal-left{opacity:0;transform:translateX(-40px);transition:opacity .7s ease,transform .7s ease;}
+.reveal-left.visible{opacity:1;transform:translateX(0);}
+.reveal-right{opacity:0;transform:translateX(40px);transition:opacity .7s ease,transform .7s ease;}
+.reveal-right.visible{opacity:1;transform:translateX(0);}
+
+/* ── SECTION COMMON ── */
+section{padding:100px 6%;}
+.section-label{
+  font-size:11px;letter-spacing:4px;color:var(--gold);
+  text-transform:uppercase;margin-bottom:12px;font-weight:400;
+}
+.section-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(36px,5vw,60px);font-weight:600;
+  color:var(--cream);line-height:1.1;margin-bottom:20px;
+}
+.section-title span{color:var(--gold);font-style:italic;}
+.section-desc{
+  font-size:15px;line-height:1.9;color:var(--muted);font-weight:300;
+  max-width:560px;
+}
+
+/* ── STATS STRIP ── */
+.stats{
+  padding:40px 6%;
+  display:flex;justify-content:center;gap:0;flex-wrap:wrap;
+  border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);
+  background:rgba(232,168,48,.03);
+}
+.stat{
+  flex:1;min-width:150px;text-align:center;padding:24px;
+  border-right:0.5px solid var(--border);
+}
+.stat:last-child{border-right:none;}
+.stat-number{
+  font-family:'Cormorant Garamond',serif;
+  font-size:48px;font-weight:700;color:var(--gold);line-height:1;
+}
+.stat-label{font-size:11px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-top:6px;}
+
+/* ── FEATURES ── */
+.features{background:linear-gradient(to bottom,var(--deep),var(--indigo));}
+.features-header{text-align:center;margin-bottom:64px;}
+.features-header .section-desc{margin:0 auto;}
+.features-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:20px;max-width:1100px;margin:0 auto;
+}
+.feature-card{
+  background:var(--card);
+  border:0.5px solid var(--border);
+  border-radius:20px;padding:36px;
+  position:relative;overflow:hidden;
+  transition:transform .3s,border-color .3s,box-shadow .3s;
+}
+.feature-card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% -20%,rgba(232,168,48,.07) 0%,transparent 60%);
+  opacity:0;transition:opacity .3s;
+}
+.feature-card:hover{transform:translateY(-6px);border-color:rgba(232,168,48,.35);box-shadow:0 20px 60px rgba(0,0,0,.4);}
+.feature-card:hover::before{opacity:1;}
+.feature-icon{
+  width:52px;height:52px;border-radius:14px;
+  background:linear-gradient(135deg,rgba(232,168,48,.15),rgba(240,112,32,.1));
+  border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;margin-bottom:20px;
+}
+.feature-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--cream);margin-bottom:10px;}
+.feature-desc{font-size:14px;line-height:1.8;color:var(--muted);}
+.feature-card.featured{
+  background:linear-gradient(145deg,#1f1650,#15112e);
+  border-color:rgba(232,168,48,.4);
+  grid-column:span 1;
+}
+
+/* ── HOW IT WORKS ── */
+.how{
+  background:var(--indigo);
+  display:flex;gap:80px;align-items:center;flex-wrap:wrap;
+}
+.how-left{flex:1;min-width:280px;}
+.how-right{flex:1;min-width:280px;}
+.steps{display:flex;flex-direction:column;gap:0;}
+.step{display:flex;gap:24px;padding:28px 0;border-bottom:0.5px solid var(--border);position:relative;}
+.step:last-child{border-bottom:none;}
+.step-num{
+  width:44px;height:44px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--gold),var(--saffron));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:#0D0B1A;
+}
+.step-title{font-size:16px;font-weight:500;color:var(--cream);margin-bottom:6px;}
+.step-desc{font-size:13px;line-height:1.7;color:var(--muted);}
+
+/* Phone mockup */
+.phone-mockup{
+  width:260px;margin:0 auto;
+  background:linear-gradient(145deg,#1e1840,#0f0d20);
+  border-radius:40px;padding:16px;
+  border:1.5px solid rgba(232,168,48,.2);
+  box-shadow:0 40px 80px rgba(0,0,0,.6),0 0 80px rgba(232,168,48,.05);
+  position:relative;
+}
+.phone-notch{
+  width:80px;height:8px;background:#0D0B1A;border-radius:10px;
+  margin:0 auto 16px;
+}
+.phone-screen{
+  background:var(--deep);border-radius:28px;
+  overflow:hidden;aspect-ratio:9/16;
+  display:flex;flex-direction:column;
+}
+.phone-status{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 16px 8px;font-size:10px;color:var(--muted);
+}
+.phone-player{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:20px;gap:16px;
+}
+.player-art{
+  width:130px;height:130px;border-radius:20px;
+  background:linear-gradient(145deg,#2D1F6E,#1A1535);
+  border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
+  font-size:42px;
+  box-shadow:0 16px 40px rgba(0,0,0,.5);
+  animation:float 4s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+.player-song{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--cream);text-align:center;}
+.player-artist{font-size:11px;color:var(--muted);letter-spacing:1px;margin-top:-8px;}
+.player-bar{width:100%;background:rgba(255,255,255,.1);height:3px;border-radius:2px;}
+.player-bar-fill{width:45%;height:100%;background:linear-gradient(to right,var(--gold),var(--saffron));border-radius:2px;}
+.player-controls{display:flex;gap:24px;align-items:center;}
+.ctrl-btn{width:36px;height:36px;border-radius:50%;background:rgba(232,168,48,.1);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;}
+.ctrl-play{
+  width:52px;height:52px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),var(--saffron));
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+  box-shadow:0 8px 24px rgba(232,168,48,.4);
+}
+.offline-badge{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(232,168,48,.1);border:1px solid var(--border);
+  border-radius:20px;padding:5px 12px;font-size:10px;color:var(--gold);
+  letter-spacing:1px;
+}
+.offline-dot{width:5px;height:5px;background:var(--gold);border-radius:50%;animation:blink 2s infinite;}
+
+/* ── SCREENSHOTS ── */
+.screenshots{background:var(--deep);overflow:hidden;}
+.screenshots-header{text-align:center;margin-bottom:60px;}
+.screens-scroll{
+  display:flex;gap:20px;overflow-x:auto;
+  padding:20px 6% 40px;scrollbar-width:none;
+}
+.screens-scroll::-webkit-scrollbar{display:none;}
+.screen-card{
+  flex-shrink:0;width:220px;
+  background:linear-gradient(145deg,#1e1840,#120f2a);
+  border-radius:32px;border:1px solid var(--border);
+  overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+  transition:transform .3s;
+}
+.screen-card:hover{transform:translateY(-10px) scale(1.02);}
+.screen-inner{aspect-ratio:9/17;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px;}
+.screen-icon{font-size:40px;}
+.screen-name{font-size:11px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;}
+.screen-desc{font-size:10px;color:var(--muted);text-align:center;line-height:1.6;}
+
+/* dummy screen styles */
+.dummy-bar{height:4px;border-radius:2px;background:rgba(232,168,48,.2);width:100%;margin:4px 0;}
+.dummy-bar.active{background:linear-gradient(to right,var(--gold),var(--saffron));}
+.dummy-circle{width:60px;height:60px;border-radius:50%;background:linear-gradient(145deg,#2D1F6E,#1A1535);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;}
+
+/* ── OFFLINE SECTION ── */
+.offline-section{
+  background:linear-gradient(135deg,var(--violet),var(--indigo));
+  text-align:center;
+  position:relative;overflow:hidden;
+}
+.offline-section::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 70% at 50% 50%,rgba(232,168,48,.08) 0%,transparent 70%);
+}
+.offline-section .section-desc{margin:0 auto 48px;}
+.signal-visual{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  flex-wrap:wrap;margin-bottom:48px;
+}
+.signal-bars{display:flex;align-items:flex-end;gap:4px;}
+.signal-bar{width:8px;border-radius:4px;background:var(--gold);}
+.signal-x{font-size:28px;color:rgba(245,237,216,.3);}
+.signal-arrow{font-size:24px;color:var(--gold);}
+.signal-play{
+  width:60px;height:60px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),var(--saffron));
+  display:flex;align-items:center;justify-content:center;font-size:22px;
+  box-shadow:0 8px 32px rgba(232,168,48,.4);
+}
+.signal-label{font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+
+/* ── COMING SOON / ROADMAP ── */
+.roadmap{background:var(--indigo);}
+.roadmap-header{text-align:center;margin-bottom:60px;}
+.roadmap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;max-width:1000px;margin:0 auto;}
+.roadmap-card{
+  background:var(--card);border:0.5px solid var(--border);
+  border-radius:16px;padding:28px;
+  display:flex;gap:16px;align-items:flex-start;
+}
+.roadmap-tag{
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  padding:4px 10px;border-radius:20px;white-space:nowrap;margin-top:2px;
+}
+.tag-soon{background:rgba(232,168,48,.1);color:var(--gold);border:1px solid rgba(232,168,48,.3);}
+.tag-later{background:rgba(240,112,32,.1);color:var(--saffron);border:1px solid rgba(240,112,32,.3);}
+.tag-planned{background:rgba(245,237,216,.08);color:var(--muted);border:1px solid rgba(245,237,216,.15);}
+.roadmap-content{}
+.roadmap-title{font-size:15px;font-weight:500;color:var(--cream);margin-bottom:6px;}
+.roadmap-desc{font-size:12px;color:var(--muted);line-height:1.7;}
+
+/* ── DOWNLOAD ── */
+.download{
+  background:linear-gradient(145deg,#1e1840,var(--deep));
+  text-align:center;
+  border-top:0.5px solid var(--border);
+}
+.download-card{
+  max-width:640px;margin:0 auto;
+  background:var(--card);border:1px solid rgba(232,168,48,.25);
+  border-radius:28px;padding:60px 48px;
+  box-shadow:0 40px 80px rgba(0,0,0,.4),0 0 80px rgba(232,168,48,.05);
+}
+.download-logo{
+  width:80px;height:80px;border-radius:22px;
+  background:linear-gradient(145deg,#1e1840,#120f2a);
+  border:1px solid rgba(232,168,48,.3);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 24px;
+  box-shadow:0 8px 32px rgba(0,0,0,.4);
+}
+.download-title{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:600;color:var(--cream);margin-bottom:8px;}
+.download-title span{color:var(--gold);}
+.download-sub{font-size:13px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:20px;}
+.download-desc{font-size:14px;line-height:1.8;color:var(--muted);margin-bottom:36px;}
+.download-btn{
+  display:inline-flex;align-items:center;gap:12px;
+  padding:18px 48px;border-radius:50px;
+  background:linear-gradient(135deg,var(--gold),var(--saffron));
+  color:#0D0B1A;font-size:15px;font-weight:700;
+  text-decoration:none;letter-spacing:.5px;
+  transition:transform .2s,box-shadow .2s;
+  box-shadow:0 12px 36px rgba(232,168,48,.4);
+  margin-bottom:20px;
+}
+.download-btn:hover{transform:translateY(-4px);box-shadow:0 20px 48px rgba(232,168,48,.5);}
+.download-note{font-size:11px;color:var(--muted);letter-spacing:1px;}
+
+/* ── FOOTER ── */
+footer{
+  padding:60px 6% 40px;
+  border-top:0.5px solid var(--border);
+  background:var(--deep);
+}
+.footer-top{display:flex;gap:60px;flex-wrap:wrap;margin-bottom:48px;}
+.footer-brand{flex:2;min-width:240px;}
+.footer-brand-name{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;color:var(--cream);margin-bottom:6px;}
+.footer-brand-name span{color:var(--gold);}
+.footer-tagline{font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:16px;}
+.footer-about{font-size:13px;line-height:1.8;color:var(--muted);max-width:320px;}
+.footer-col{flex:1;min-width:140px;}
+.footer-col-title{font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:16px;}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.footer-links a{color:var(--muted);text-decoration:none;font-size:13px;transition:color .2s;}
+.footer-links a:hover{color:var(--cream);}
+.social-row{display:flex;gap:12px;margin-top:24px;}
+.social-btn{
+  width:38px;height:38px;border-radius:10px;
+  border:1px solid var(--border);background:rgba(232,168,48,.05);
+  display:flex;align-items:center;justify-content:center;
+  text-decoration:none;font-size:15px;
+  transition:border-color .2s,background .2s,transform .2s;
+}
+.social-btn:hover{border-color:var(--gold);background:rgba(232,168,48,.1);transform:translateY(-3px);}
+.footer-bottom{
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:12px;
+  padding-top:28px;border-top:0.5px solid var(--border);
+  font-size:12px;color:var(--muted);
+}
+.footer-bottom a{color:var(--muted);text-decoration:none;}
+.footer-bottom a:hover{color:var(--gold);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  nav{padding:16px 5%;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  section{padding:70px 5%;}
+  .how{flex-direction:column;gap:48px;}
+  .how-left{order:2;}
+  .how-right{order:1;}
+  .stat{min-width:120px;}
+  .footer-top{gap:36px;}
+  .download-card{padding:40px 24px;}
+  .hero-btns{flex-direction:column;align-items:center;}
+}
+@media(max-width:480px){
+  .hero-title{letter-spacing:-1px;}
+  .hero-logo-mark{width:70px;height:70px;border-radius:18px;}
+  .download-card{padding:32px 20px;}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- ── NAV ── -->
+<nav id="nav">
+  <div class="nav-logo">
+    <div class="nav-logo-icon">
+      <svg width="22" height="22" viewBox="0 0 42 42" fill="none">
+        <rect x="3" y="17" width="4" height="8" rx="2" fill="#E8A830" opacity=".5"/>
+        <rect x="9" y="12" width="4" height="18" rx="2" fill="#E8A830" opacity=".75"/>
+        <rect x="15" y="7" width="4" height="28" rx="2" fill="#E8A830"/>
+        <circle cx="23" cy="21" r="1.5" fill="#E8A830" opacity=".3"/>
+        <circle cx="27" cy="21" r="1.5" fill="#E8A830" opacity=".5"/>
+        <rect x="31" y="12" width="4" height="18" rx="2" fill="#F07020" opacity=".75"/>
+        <rect x="37" y="17" width="4" height="8" rx="2" fill="#F07020" opacity=".5"/>
+        <circle cx="25" cy="13" r="2.5" fill="#F5C96A" opacity=".7"/>
+        <circle cx="25" cy="13" r="1.5" fill="#F5C96A"/>
+      </svg>
+    </div>
+    <div class="nav-logo-text">Sur<span>aag</span></div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#screenshots">Screens</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+  </ul>
+  <a href="#download" class="nav-cta">Download App</a>
+  <div class="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-orb"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      Now Available · Android
+    </div>
+
+    <div class="hero-logo-mark">
+      <svg width="52" height="52" viewBox="0 0 42 42" fill="none">
+        <rect x="3" y="17" width="4" height="8" rx="2" fill="#E8A830" opacity=".5"/>
+        <rect x="9" y="12" width="4" height="18" rx="2" fill="#E8A830" opacity=".75"/>
+        <rect x="15" y="7" width="4" height="28" rx="2" fill="#E8A830"/>
+        <circle cx="23" cy="21" r="1.5" fill="#E8A830" opacity=".3"/>
+        <circle cx="27" cy="21" r="1.5" fill="#E8A830" opacity=".5"/>
+        <rect x="31" y="12" width="4" height="18" rx="2" fill="#F07020" opacity=".75"/>
+        <rect x="37" y="17" width="4" height="8" rx="2" fill="#F07020" opacity=".5"/>
+        <circle cx="25" cy="13" r="2.5" fill="#F5C96A" opacity=".7"/>
+        <circle cx="25" cy="13" r="1.5" fill="#F5C96A"/>
+      </svg>
+    </div>
+
+    <h1 class="hero-title">Sur<span class="gold">aag</span></h1>
+    <p class="hero-tagline">Music That Never Loses You</p>
+    <p class="hero-desc">
+      Stream your favourite songs online — and when the network disappears,
+      <strong>Suraag keeps playing</strong>. No manual downloads. No interruptions.
+      Just unbroken music, always.
+    </p>
+
+    <div class="hero-btns">
+      <a href="#download" class="btn-primary">
+        ⬇ Download APK
+      </a>
+      <a href="#features" class="btn-secondary">
+        Explore Features →
+      </a>
+    </div>
+  </div>
+
+  <!-- Animated waveform at bottom -->
+  <div class="hero-wave" id="heroWave"></div>
+</section>
+
+<!-- ── STATS ── -->
+<div class="stats">
+  <div class="stat reveal">
+    <div class="stat-number">0ms</div>
+    <div class="stat-label">Offline Delay</div>
+  </div>
+  <div class="stat reveal">
+    <div class="stat-number">∞</div>
+    <div class="stat-label">Uninterrupted Play</div>
+  </div>
+  <div class="stat reveal">
+    <div class="stat-number">0</div>
+    <div class="stat-label">Manual Downloads</div>
+  </div>
+  <div class="stat reveal">
+    <div class="stat-number">1</div>
+    <div class="stat-label">App, All You Need</div>
+  </div>
+</div>
+
+<!-- ── FEATURES ── -->
+<section class="features" id="features">
+  <div class="features-header reveal">
+    <p class="section-label">What We Offer</p>
+    <h2 class="section-title">Built different,<br/><span>plays different</span></h2>
+    <p class="section-desc">Every feature in Suraag is designed around one philosophy — your music should never stop, no matter where you are.</p>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card featured reveal">
+      <div class="feature-icon">📡</div>
+      <h3 class="feature-title">Seamless Offline Playback</h3>
+      <p class="feature-desc">Our core magic — Suraag detects network drops in real-time and switches to cached audio without a single skip, stutter, or pause. You won't even notice the signal is gone.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🎵</div>
+      <h3 class="feature-title">Online Streaming</h3>
+      <p class="feature-desc">Stream millions of songs in high quality when you're connected. Adaptive bitrate ensures smooth playback even on slow networks.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">⚡</div>
+      <h3 class="feature-title">Smart Caching</h3>
+      <p class="feature-desc">Suraag quietly caches what you're listening to in the background — no action needed from you. It just works.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🎨</div>
+      <h3 class="feature-title">Beautiful Dark UI</h3>
+      <p class="feature-desc">Crafted with a deep indigo and gold palette — easy on the eyes at night, stunning in the dark, always premium.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🔍</div>
+      <h3 class="feature-title">Smart Search</h3>
+      <p class="feature-desc">Find any song, artist, or album instantly. Search works even offline for recently played content.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🇮🇳</div>
+      <h3 class="feature-title">Built for India</h3>
+      <p class="feature-desc">Designed keeping Indian network conditions in mind — patchy signals, metro tunnels, rural areas. Suraag handles them all.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="how" id="how">
+  <div class="how-left reveal-left">
+    <p class="section-label">How It Works</p>
+    <h2 class="section-title">The <span>Suraag</span><br/>behind the magic</h2>
+    <p class="section-desc" style="margin-bottom:40px;">The name Suraag means "clue" in Hindi. And that's exactly what our tech does — it finds a way to keep your music alive, even when the signal leaves no trace.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">Stream Normally Online</div>
+          <div class="step-desc">While you're connected, Suraag streams your music in real-time at the best quality your network allows.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">Smart Background Caching</div>
+          <div class="step-desc">Behind the scenes, Suraag quietly caches the current and upcoming tracks into a smart local buffer.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">Network Drop Detected</div>
+          <div class="step-desc">The moment your signal weakens or disappears, Suraag detects it instantly and switches to local cache.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div>
+          <div class="step-title">Music Never Stops</div>
+          <div class="step-desc">You hear nothing different. The song keeps playing. No buffering. No notification. Just music — always.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="how-right reveal-right">
+    <div class="phone-mockup">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="phone-status">
+          <span>9:41</span>
+          <div style="display:flex;gap:4px;align-items:center;">
+            <span style="font-size:8px;">⚡</span>
+            <span>100%</span>
+          </div>
+        </div>
+        <div class="phone-player">
+          <div class="offline-badge">
+            <span class="offline-dot"></span>
+            Playing Offline
+          </div>
+          <div class="player-art">🎵</div>
+          <div class="player-song">Tum Hi Ho</div>
+          <div class="player-artist">ARIJIT SINGH</div>
+          <div class="player-bar"><div class="player-bar-fill"></div></div>
+          <div style="display:flex;justify-content:space-between;width:100%;font-size:9px;color:var(--muted);">
+            <span>1:24</span><span>4:22</span>
+          </div>
+          <div class="player-controls">
+            <div class="ctrl-btn">⏮</div>
+            <div class="ctrl-play">▶</div>
+            <div class="ctrl-btn">⏭</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SCREENSHOTS ── -->
+<section class="screenshots" id="screenshots">
+  <div class="screenshots-header reveal">
+    <p class="section-label">App Screens</p>
+    <h2 class="section-title">Crafted with<br/><span>every detail</span></h2>
+    <p class="section-desc" style="margin:0 auto;">A look inside Suraag — clean, dark, and effortlessly beautiful.</p>
+  </div>
+
+  <div class="screens-scroll">
+    <div class="screen-card">
+      <div class="screen-inner">
+        <div class="dummy-circle">🏠</div>
+        <div class="screen-name">Home</div>
+        <div class="screen-desc">Discover trending songs and personalised picks</div>
+        <div class="dummy-bar active"></div>
+        <div class="dummy-bar"></div>
+        <div class="dummy-bar active" style="width:70%"></div>
+      </div>
+    </div>
+    <div class="screen-card">
+      <div class="screen-inner">
+        <div class="dummy-circle">🔍</div>
+        <div class="screen-name">Search</div>
+        <div class="screen-desc">Find any song, artist or album instantly</div>
+        <div class="dummy-bar active" style="width:80%"></div>
+        <div class="dummy-bar" style="width:60%"></div>
+        <div class="dummy-bar active" style="width:90%"></div>
+      </div>
+    </div>
+    <div class="screen-card">
+      <div class="screen-inner">
+        <div class="dummy-circle">🎵</div>
+        <div class="screen-name">Now Playing</div>
+        <div class="screen-desc">Full-screen player with album art and controls</div>
+        <div class="dummy-bar active"></div>
+        <div class="dummy-bar" style="width:45%"></div>
+      </div>
+    </div>
+    <div class="screen-card">
+      <div class="screen-inner">
+        <div class="dummy-circle">📚</div>
+        <div class="screen-name">Library</div>
+        <div class="screen-desc">Your playlists, favourites and history</div>
+        <div class="dummy-bar active" style="width:75%"></div>
+        <div class="dummy-bar active" style="width:55%"></div>
+        <div class="dummy-bar" style="width:80%"></div>
+      </div>
+    </div>
+    <div class="screen-card">
+      <div class="screen-inner">
+        <div class="dummy-circle">👤</div>
+        <div class="screen-name">Profile</div>
+        <div class="screen-desc">Your account, settings and preferences</div>
+        <div class="dummy-bar" style="width:60%"></div>
+        <div class="dummy-bar active" style="width:90%"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── OFFLINE HIGHLIGHT ── -->
+<section class="offline-section reveal">
+  <div style="position:relative;z-index:2;">
+    <p class="section-label">The Core Feature</p>
+    <h2 class="section-title" style="margin-bottom:16px;">Signal gone.<br/><span>Music stays.</span></h2>
+    <p class="section-desc">No other music app does this without making you download manually. Suraag is the first to make offline playback completely invisible and automatic.</p>
+
+    <div class="signal-visual">
+      <div>
+        <div class="signal-bars">
+          <div class="signal-bar" style="height:8px;opacity:.3"></div>
+          <div class="signal-bar" style="height:14px;opacity:.3"></div>
+          <div class="signal-bar" style="height:20px;opacity:.3"></div>
+          <div class="signal-bar" style="height:26px;opacity:.3"></div>
+        </div>
+        <div class="signal-label" style="margin-top:8px;">No Signal</div>
+      </div>
+      <div class="signal-x">✕</div>
+      <div class="signal-arrow">→</div>
+      <div>
+        <div class="signal-play">▶</div>
+        <div class="signal-label" style="margin-top:8px;">Still Playing</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ROADMAP ── -->
+<section class="roadmap" id="roadmap">
+  <div class="roadmap-header reveal">
+    <p class="section-label">What's Coming</p>
+    <h2 class="section-title">The <span>future</span><br/>of Suraag</h2>
+    <p class="section-desc" style="margin:0 auto;">We're just getting started. Here's what we're building next.</p>
+  </div>
+
+  <div class="roadmap-grid">
+    <div class="roadmap-card reveal">
+      <span class="roadmap-tag tag-soon">Coming Soon</span>
+      <div class="roadmap-content">
+        <div class="roadmap-title">Playlist Creation</div>
+        <div class="roadmap-desc">Build and manage your own playlists. Save your mood, your moment.</div>
+      </div>
+    </div>
+    <div class="roadmap-card reveal">
+      <span class="roadmap-tag tag-soon">Coming Soon</span>
+      <div class="roadmap-content">
+        <div class="roadmap-title">Lyrics Display</div>
+        <div class="roadmap-desc">Real-time synced lyrics so you can sing along every time.</div>
+      </div>
+    </div>
+    <div class="roadmap-card reveal">
+      <span class="roadmap-tag tag-later">Q3 2026</span>
+      <div class="roadmap-content">
+        <div class="roadmap-title">Sleep Timer</div>
+        <div class="roadmap-desc">Set a timer and let Suraag gently fade out when you fall asleep.</div>
+      </div>
+    </div>
+    <div class="roadmap-card reveal">
+      <span class="roadmap-tag tag-later">Q3 2026</span>
+      <div class="roadmap-content">
+        <div class="roadmap-title">Equaliser</div>
+        <div class="roadmap-desc">Fine-tune your sound with a built-in 10-band equaliser.</div>
+      </div>
+    </div>
+    <div class="roadmap-card reveal">
+      <span class="roadmap-tag tag-planned">Planned</span>
+      <div class="roadmap-content">
+        <div class="roadmap-title">iOS Version</div>
+        <div class="roadmap-desc">Suraag is coming to iPhone. Same magic, same seamless experience.</div>
+      </div>
+    </div>
+    <div class="roadmap-card reveal">
+      <span class="roadmap-tag tag-planned">Planned</span>
+      <div class="roadmap-content">
+        <div class="roadmap-title">AI Recommendations</div>
+        <div class="roadmap-desc">Hyper-personal music discovery powered by your listening habits.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── DOWNLOAD ── -->
+<section class="download" id="download">
+  <div class="download-card reveal">
+    <div class="download-logo">
+      <svg width="44" height="44" viewBox="0 0 42 42" fill="none">
+        <rect x="3" y="17" width="4" height="8" rx="2" fill="#E8A830" opacity=".5"/>
+        <rect x="9" y="12" width="4" height="18" rx="2" fill="#E8A830" opacity=".75"/>
+        <rect x="15" y="7" width="4" height="28" rx="2" fill="#E8A830"/>
+        <circle cx="23" cy="21" r="1.5" fill="#E8A830" opacity=".3"/>
+        <circle cx="27" cy="21" r="1.5" fill="#E8A830" opacity=".5"/>
+        <rect x="31" y="12" width="4" height="18" rx="2" fill="#F07020" opacity=".75"/>
+        <rect x="37" y="17" width="4" height="8" rx="2" fill="#F07020" opacity=".5"/>
+        <circle cx="25" cy="13" r="2.5" fill="#F5C96A" opacity=".7"/>
+        <circle cx="25" cy="13" r="1.5" fill="#F5C96A"/>
+      </svg>
+    </div>
+    <h2 class="download-title">Sur<span>aag</span></h2>
+    <p class="download-sub">Music That Never Loses You</p>
+    <p class="download-desc">Free to download. Free to use. Just music that works — everywhere, always.</p>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+      <a href="#" class="download-btn">
+        ⬇ &nbsp;Download APK &nbsp;·&nbsp; v1.0
+      </a>
+      <p class="download-note">Android 7.0+ required &nbsp;·&nbsp; ~18 MB &nbsp;·&nbsp; Free</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="footer-brand-name">Sur<span>aag</span></div>
+      <div class="footer-tagline">Music That Never Loses You</div>
+      <p class="footer-about">Suraag is an Indian music streaming app built to work even when your network doesn't. Stream online, play offline — automatically.</p>
+      <div class="social-row">
+        <a href="#" class="social-btn" title="Instagram">📸</a>
+        <a href="#" class="social-btn" title="Twitter/X">🐦</a>
+        <a href="#" class="social-btn" title="YouTube">▶️</a>
+        <a href="#" class="social-btn" title="LinkedIn">💼</a>
+        <a href="#" class="social-btn" title="WhatsApp">💬</a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <div class="footer-col-title">App</div>
+      <ul class="footer-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="#screenshots">Screenshots</a></li>
+        <li><a href="#download">Download</a></li>
+        <li><a href="#roadmap">Roadmap</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <div class="footer-col-title">Company</div>
+      <ul class="footer-links">
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Careers</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <div class="footer-col-title">Legal</div>
+      <ul class="footer-links">
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Use</a></li>
+        <li><a href="#">Cookie Policy</a></li>
+        <li><a href="#">Licences</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span>© 2026 Suraag. Made with ♥ in India 🇮🇳</span>
+    <span><a href="mailto:hello@suraagmusic.in">hello@suraagmusic.in</a></span>
+    <span>suraagmusic.in</span>
+  </div>
+</footer>
+
+<script>
+// ── CURSOR ──
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX; my=e.clientY;
+  cursor.style.left=mx-5+'px'; cursor.style.top=my-5+'px';
+});
+function animRing(){
+  rx+=(mx-rx-18)*.12; ry+=(my-ry-18)*.12;
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.transform='scale(2.5)';ring.style.opacity='0';});
+  el.addEventListener('mouseleave',()=>{cursor.style.transform='scale(1)';ring.style.opacity='1';});
+});
+
+// ── NAV SCROLL ──
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('scrolled',scrollY>60);
+});
+
+// ── HERO WAVE BARS ──
+const waveEl=document.getElementById('heroWave');
+for(let i=0;i<60;i++){
+  const b=document.createElement('div');
+  b.className='wave-bar';
+  const h=10+Math.random()*70;
+  b.style.height=h+'px';
+  b.style.animationDelay=(Math.random()*1.4)+'s';
+  b.style.opacity=(0.2+Math.random()*0.5).toString();
+  waveEl.appendChild(b);
+}
+
+// ── SCROLL REVEAL ──
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){e.target.classList.add('visible');}
+  });
+},{threshold:.12});
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el=>observer.observe(el));
+
+// ── HAMBURGER ──
+let menuOpen=false;
+function toggleMenu(){
+  menuOpen=!menuOpen;
+  const links=document.querySelector('.nav-links');
+  if(menuOpen){
+    links.style.cssText='display:flex;flex-direction:column;position:fixed;top:70px;left:0;right:0;background:rgba(8,6,17,.97);padding:32px;gap:24px;z-index:800;border-bottom:0.5px solid rgba(232,168,48,.15);';
+  } else {
+    links.style.cssText='display:none;';
+  }
+}
+
+// ── STAGGER REVEAL DELAYS ──
+document.querySelectorAll('.features-grid .feature-card').forEach((c,i)=>{
+  c.style.transitionDelay=(i*0.08)+'s';
+});
+document.querySelectorAll('.roadmap-grid .roadmap-card').forEach((c,i)=>{
+  c.style.transitionDelay=(i*0.07)+'s';
+});
+</script>
+</body>
+</html>
