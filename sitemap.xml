@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://suraagmusic.in/</loc>
+    <lastmod>2026-06-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://suraagmusic.in/og-image.png</image:loc>
+      <image:title>Suraag — Music That Never Loses You</image:title>
+      <image:caption>Offline-first music streaming app for Android. Stream online, play offline, automatically.</image:caption>
+    </image:image>
+  </url>
+</urlset>

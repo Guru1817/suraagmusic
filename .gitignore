@@ -1,0 +1,10 @@
+node_modules/
+*.log
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Lighthouse audit artifacts — regenerate locally with `npx lighthouse ...`
+lighthouse-*.json
+lighthouse-*.html
